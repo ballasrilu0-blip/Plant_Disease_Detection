@@ -1,0 +1,19 @@
+PLANT DISEASE DETECTION
+TRAINING SUMMARY
+================================================================================
+
+Transfer Learning Epochs : 30
+Fine-Tuning Epochs       : 20
+Fixed Final Epoch        : 74
+Completed Epoch          : 74
+Initial Learning Rate    : 0.0003
+Fine-Tune Learning Rate  : 3e-06
+Best Validation Epoch   : 21
+Best Validation Accuracy: 93.45%
+
+Training Status          : COMPLETED
+
+Model Files:
+Best Model   : C:\Users\balla\Domain_project\Plant_Disease_Detection\models\best_model.keras
+Last Model   : C:\Users\balla\Domain_project\Plant_Disease_Detection\models\last_model.keras
+Final Model  : C:\Users\balla\Domain_project\Plant_Disease_Detection\models\final_model.keras

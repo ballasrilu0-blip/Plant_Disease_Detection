@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+        Plant Disease Detection
+    </title>
+
+    <link
+        rel="stylesheet"
+        href="{{ url_for('static', filename='style.css') }}"
+    >
+
+</head>
+
+
+<body>
+
+
+<div class="container">
+
+
+    <!-- ====================================================
+         HEADER
+    ===================================================== -->
+
+    <header class="header">
+
+        <div class="logo">
+            🌱
+        </div>
+
+        <div>
+
+            <h1>
+                Plant Disease Detection
+            </h1>
+
+            <p>
+                AI-powered plant health analysis
+            </p>
+
+        </div>
+
+    </header>
+
+
+    <!-- ====================================================
+         UPLOAD CARD
+    ===================================================== -->
+
+    <section class="upload-card">
+
+        <h2>
+            Analyze Plant
+        </h2>
+
+        <p class="subtitle">
+            Upload a clear image of a plant leaf,
+            fruit or affected plant part.
+        </p>
+
+
+        <form
+            action="{{ url_for('predict') }}"
+            method="POST"
+            enctype="multipart/form-data"
+        >
+
+
+            <label
+                for="image"
+                class="upload-box"
+            >
+
+                <div class="upload-icon">
+                    📷
+                </div>
+
+                <strong>
+                    Select Plant Image
+                </strong>
+
+                <span>
+                    JPG, JPEG, PNG, WEBP or BMP
+                </span>
+
+            </label>
+
+
+            <input
+                id="image"
+                name="image"
+                type="file"
+                accept=".jpg,.jpeg,.png,.webp,.bmp"
+                required
+            >
+
+
+            <button
+                type="submit"
+                class="analyze-button"
+            >
+                Analyze Plant →
+            </button>
+
+
+        </form>
+
+    </section>
+
+
+    <!-- ====================================================
+         FLASH MESSAGE
+    ===================================================== -->
+
+    {% with messages =
+        get_flashed_messages(with_categories=true)
+    %}
+
+        {% if messages %}
+
+            {% for category, message in messages %}
+
+                <div class="flash-message">
+
+                    {{ message }}
+
+                </div>
+
+            {% endfor %}
+
+        {% endif %}
+
+    {% endwith %}
+
+
+    <!-- ====================================================
+         RESULT
+    ===================================================== -->
+
+    {% if result %}
+
+
+    <section class="result-section">
+
+
+        <div class="section-label">
+            ANALYSIS COMPLETE
+        </div>
+
+
+        <div class="result-heading">
+
+
+            <div>
+
+                <h2>
+                    Prediction Result
+                </h2>
+
+                <p class="model-class">
+
+                    Model class:
+
+                    <strong>
+                        {{ result.model_class }}
+                    </strong>
+
+                </p>
+
+            </div>
+
+
+            <div class="verified">
+                ✓ AI Verified
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             UPLOADED IMAGE
+        ================================================== -->
+
+        {% if image_url %}
+
+        <div class="image-preview">
+
+            <img
+                src="{{ image_url }}"
+                alt="Uploaded plant image"
+            >
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             MAIN RESULT
+        ================================================== -->
+
+        <div class="result-card">
+
+
+            <div class="plant-symbol">
+                🌱
+            </div>
+
+
+            <div class="result-details">
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Disease
+                    </span>
+
+                    <b>
+                        {{ result.disease }}
+                    </b>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Plant
+                    </span>
+
+                    <b>
+                        {{ result.plant }}
+                    </b>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Affected Part
+                    </span>
+
+                    <b>
+                        {{ result.affected_part }}
+                    </b>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Disease Type
+                    </span>
+
+                    <b>
+                        {{ result.disease_type }}
+                    </b>
+
+                </div>
+
+
+                <div class="detail-row">
+
+                    <span>
+                        Confidence
+                    </span>
+
+                    <b class="confidence">
+
+                        {{ "%.2f"|format(
+                            result.confidence
+                        ) }}%
+
+                    </b>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+
+        <!-- =================================================
+             HEALTHY
+        ================================================== -->
+
+        {% if result.healthy %}
+
+        <div class="healthy-message">
+
+            <h3>
+                🌿 Healthy Plant
+            </h3>
+
+            <p>
+                The model classified this image as
+                healthy.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+
+        <!-- =================================================
+             DISEASE INFORMATION
+        ================================================== -->
+
+        {% if result.knowledge_available %}
+
+
+        <section class="knowledge-section">
+
+
+            <h2>
+                Disease Information
+            </h2>
+
+
+            <!-- CAUSE -->
+
+            {% if result.cause %}
+
+            <div class="info-card">
+
+                <h3>
+                    Why Does It Happen?
+                </h3>
+
+                <p>
+                    {{ result.cause }}
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- PATHOGEN -->
+
+            {% if result.pathogen %}
+
+            <div class="info-card">
+
+                <h3>
+                    Pathogen
+                </h3>
+
+                <p>
+                    {{ result.pathogen }}
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- SYMPTOMS -->
+
+            {% if result.symptoms %}
+
+            <div class="info-card">
+
+                <h3>
+                    Symptoms
+                </h3>
+
+                <ul>
+
+                    {% for item in result.symptoms %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- WHY IT HAPPENS -->
+
+            {% if result.why_it_happens %}
+
+            <div class="info-card">
+
+                <h3>
+                    Why It Happens
+                </h3>
+
+                <ul>
+
+                    {% for item in result.why_it_happens %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- CONDITIONS -->
+
+            {% if result.favorable_conditions %}
+
+            <div class="info-card">
+
+                <h3>
+                    Favorable Conditions
+                </h3>
+
+                <ul>
+
+                    {% for item in result.favorable_conditions %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- PREVENTION -->
+
+            {% if result.prevention %}
+
+            <div class="info-card">
+
+                <h3>
+                    Prevention
+                </h3>
+
+                <ul>
+
+                    {% for item in result.prevention %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- IMMEDIATE ACTION -->
+
+            {% if result.immediate_action %}
+
+            <div class="info-card">
+
+                <h3>
+                    Immediate Action
+                </h3>
+
+                <ul>
+
+                    {% for item in result.immediate_action %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- CULTURAL CONTROL -->
+
+            {% if result.cultural_control %}
+
+            <div class="info-card">
+
+                <h3>
+                    Cultural Control
+                </h3>
+
+                <ul>
+
+                    {% for item in result.cultural_control %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- BIOLOGICAL CONTROL -->
+
+            {% if result.biological_control %}
+
+            <div class="info-card">
+
+                <h3>
+                    Biological Control
+                </h3>
+
+                <ul>
+
+                    {% for item in result.biological_control %}
+
+                    <li>
+                        {{ item }}
+                    </li>
+
+                    {% endfor %}
+
+                </ul>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- CHEMICAL CONTROL -->
+
+            {% if result.chemical_control %}
+
+            <div class="info-card">
+
+                <h3>
+                    Chemical Control
+                </h3>
+
+                <p>
+                    {{ result.chemical_control }}
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+            <!-- SAFETY -->
+
+            {% if result.safety_warning %}
+
+            <div class="info-card safety">
+
+                <h3>
+                    ⚠ Safety Warning
+                </h3>
+
+                <p>
+                    {{ result.safety_warning }}
+                </p>
+
+            </div>
+
+            {% endif %}
+
+
+        </section>
+
+
+        {% else %}
+
+
+        <div class="no-information">
+
+            <h3>
+                Detailed information is unavailable
+            </h3>
+
+            <p>
+                The model produced a prediction, but
+                no matching knowledge information
+                was found.
+            </p>
+
+        </div>
+
+
+        {% endif %}
+
+
+        <!-- =================================================
+             TOP 3 PREDICTIONS
+        ================================================== -->
+
+        <section class="top-section">
+
+
+            <div class="section-label">
+                TOP 3 MODEL PREDICTIONS
+            </div>
+
+
+            {% for prediction
+               in result.top_predictions %}
+
+
+            <div class="prediction-card">
+
+
+                <div class="rank">
+                    #{{ loop.index }}
+                </div>
+
+
+                <div class="prediction-name">
+
+                    <strong>
+                        {{ prediction.disease }}
+                    </strong>
+
+                    <span>
+                        {{ prediction.plant }}
+                    </span>
+
+                </div>
+
+
+                <div class="bar-container">
+
+                    <div
+                        class="bar"
+                        style="width: {{ prediction.confidence }}%;"
+                    ></div>
+
+                </div>
+
+
+                <div class="prediction-confidence">
+
+                    {{ "%.2f"|format(
+                        prediction.confidence
+                    ) }}%
+
+                </div>
+
+
+            </div>
+
+
+            {% endfor %}
+
+
+        </section>
+
+
+    </section>
+
+
+    {% endif %}
+
+
+</div>
+
+
+</body>
+
+</html>

@@ -1,0 +1,61 @@
+@"
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Dataset
+dataset/
+
+# TensorFlow / Keras training files
+logs/
+*.keras
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+"@ | Set-Content .gitignore
+tree.txt
+@"
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Dataset
+dataset/
+
+# TensorFlow / Keras
+logs/
+*.keras
+
+# Training-generated state
+models/current_epoch.txt
+models/history.pkl
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Large/generated tree
+tree.txt
+
+# Web app uploaded images
+web_app/static/uploads/
+"@ | Set-Content .gitignore
