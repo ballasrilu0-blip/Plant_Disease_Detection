@@ -59,3 +59,7 @@ tree.txt
 # Web app uploaded images
 web_app/static/uploads/
 "@ | Set-Content .gitignore
+# Local backup files
+evaluate_backup.py
+web_app/app.py.bak
+web_app/app.py.before_fruit_fix.bak
